@@ -12,16 +12,25 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "guzzlehttp/guzzle": "~6.0|~5.3"
+        "php": "^7.1",
+        "symfony/http-client": "^4.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8",
-        "php-coveralls/php-coveralls": "^1.0"
+        "phpunit/phpunit": "^8.0",
+        "php-coveralls/php-coveralls": "^2.0"
     },
     "autoload": {
-        "psr-0": {
-            "Mailjet": "src/"
+        "psr-4": {
+            "Mailjet\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MailjetTest\\": "test/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     }
 }
