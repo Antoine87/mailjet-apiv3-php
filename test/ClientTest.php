@@ -14,7 +14,5 @@ class ClientTest extends TestCase
         $a = new Client();
 
         $this->assertInstanceOf(Client::class, $a);
-
-        $this->assertTrue($a->toto());
     }
 }
