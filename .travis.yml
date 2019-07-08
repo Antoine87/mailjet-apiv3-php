@@ -1,12 +1,13 @@
 language: php
 
-php:
-  - 7.2
-  - 7.3
-  - 7.4snapshot
-  - nightly
-
 matrix:
+  include:
+  - php: 7.2
+    env: CODE_COVERAGE=true
+  - php: 7.3
+  - php: 7.4snapshot
+  - php: nightly
+
   allow_failures:
   - php: nightly
 
@@ -15,7 +16,11 @@ install:
 
 script:
   - composer test-coverage
+  - composer static-analysis
   - composer cs-check
 
 after_success:
-  - travis_retry vendor/bin/php-coveralls --verbose
+  - |
+    if [[ CODE_COVERAGE == true ]]; then
+      travis_retry vendor/bin/php-coveralls --verbose
+    fi
