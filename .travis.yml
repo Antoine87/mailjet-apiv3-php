@@ -7,14 +7,17 @@ matrix:
         - TEST_COVERAGE=true
         - CODING_STANDARD=true
         - STATIC_ANALYSIS=true
+
     - php: 7.3
       env:
         - CODING_STANDARD=true
         - STATIC_ANALYSIS=true
+
     - php: 7.4snapshot
       env:
         - CODING_STANDARD=true
         - STATIC_ANALYSIS=true
+
     - php: nightly
 
   allow_failures:
@@ -26,8 +29,11 @@ install:
 
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
-  - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
+  - if [[ $CODING_STANDARD == 'true' ]]; then composer cs-check ; fi
   - if [[ $STATIC_ANALYSIS == 'true' ]]; then composer static-analysis ; fi
 
 after_success:
   - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry vendor/bin/php-coveralls --verbose; fi
+
+notifications:
+  email: false
