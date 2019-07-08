@@ -32,7 +32,7 @@
         }
     },
     "scripts": {
-        "cs-check": "phpcs -p --colors",
+        "cs-check": "phpcs -v -p --colors",
         "static-analysis": "phpstan analyse --no-progress --level=max src/",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"

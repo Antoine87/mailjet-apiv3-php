@@ -12,7 +12,6 @@ class Client
     private $apisecret;
     private $apitoken;
 
-
     //private $version = Config::MAIN_VERSION;
     //private $url = Config::MAIN_URL;
     //private $secure = Config::SECURED;
