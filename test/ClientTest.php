@@ -11,7 +11,7 @@ class ClientTest extends TestCase
 {
     public function testNewClient():void
     {
-        $a = new Client();
+        $a = new Client('fez');
 
         $this->assertInstanceOf(Client::class, $a);
     }
