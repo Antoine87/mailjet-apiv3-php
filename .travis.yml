@@ -2,25 +2,30 @@ language: php
 
 matrix:
   include:
-  - php: 7.2
-    env: CODE_COVERAGE=true
-  - php: 7.3
-  - php: 7.4snapshot
-  - php: nightly
+    - php: 7.2
+      env:
+        - TEST_COVERAGE=true
+        - CODING_STANDARD=true
+        - STATIC_ANALYSIS=true
+    - php: 7.3
+        - CODING_STANDARD=true
+        - STATIC_ANALYSIS=true
+    - php: 7.4snapshot
+        - CODING_STANDARD=true
+        - STATIC_ANALYSIS=true
+    - php: nightly
 
   allow_failures:
-  - php: nightly
+    - php: nightly
 
 install:
   - travis_retry composer install
+  - composer show
 
 script:
-  - composer test-coverage
-  - composer static-analysis
-  - composer cs-check
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
+  - if [[ $STATIC_ANALYSIS == 'true' ]]; then composer static-analysis ; fi
 
 after_success:
-  - |
-    if [[ CODE_COVERAGE == true ]]; then
-      travis_retry vendor/bin/php-coveralls --verbose
-    fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry vendor/bin/php-coveralls --verbose; fi
