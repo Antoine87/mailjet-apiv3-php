@@ -13,9 +13,9 @@ class Client
     private $apitoken;
 
 
-    private $version = Config::MAIN_VERSION;
-    private $url = Config::MAIN_URL;
-    private $secure = Config::SECURED;
+    //private $version = Config::MAIN_VERSION;
+    //private $url = Config::MAIN_URL;
+    //private $secure = Config::SECURED;
     private $call = true;
     private $settings = [];
     private $changed = false;
@@ -44,10 +44,10 @@ class Client
             $this->apisecret = $secret;
         } else {
             $this->apitoken = $key;
-            $this->version = Config::SMS_VERSION;
+            // $this->version = Config::SMS_VERSION;
         }
-        $this->initSettings($call, $settings);
-        $this->setSettings();
+//        $this->initSettings($call, $settings);
+//        $this->setSettings();
     }
 
     private function call2($method, $resource, $action, $args)
@@ -62,7 +62,7 @@ class Client
             array_change_key_case($args)
         );
 
-        $url = $this->buildURL($resource, $action, $args['id'], $args['actionid']);
+//        $url = $this->buildURL($resource, $action, $args['id'], $args['actionid']);
 
         $contentType = ($action == 'csvdata/text:plain' || $action == 'csverror/text:csv')
             ? 'text/plain'
@@ -71,26 +71,20 @@ class Client
         $isBasicAuth = $this->isBasicAuthentication($this->apikey, $this->apisecret);
         $auth = $isBasicAuth ? [$this->apikey, $this->apisecret] : [$this->apitoken];
 
-        $request = new Request(
-            $auth,
-            $method,
-            $url,
-            $args['filters'],
-            $args['body'],
-            $contentType
-        );
-        return $request->call($this->call);
+//        $request = new Request(
+//            $auth,
+//            $method,
+//            $args['filters'],
+//            $args['body'],
+//            $contentType
+//        );
+//        return $request->call($this->call);
     }
 
-    /**
-     * Build the base API url depending on wether user need a secure connection
-     * or not
-     * @return string the API url;
-     */
     private function getApiUrl()
     {
-        $h = $this->secure === true ? 'https' : 'http';
-        return sprintf('%s://%s/%s/', $h, $this->url, $this->version);
+//        $h = $this->secure === true ? 'https' : 'http';
+//        return sprintf('%s://%s/%s/', $h, $this->url, $this->version);
     }
 
     /**
@@ -108,197 +102,5 @@ class Client
             return true;
         }
         return false;
-    }
-
-    /**
-     * Trigger a POST request
-     * @param array $resource Mailjet Resource/Action pair
-     * @param array $args Request arguments
-     * @return Response
-     */
-    public function post($resource, array $args = [], array $options = [])
-    {
-        if (!empty($options)) {
-            $this->setOptions($options, $resource);
-        }
-        $result = $this->call2('POST', $resource[0], $resource[1], $args);
-
-        if (!empty($this->changed)) {
-            $this->setSettings();
-        }
-        return $result;
-    }
-
-    /**
-     * Trigger a GET request
-     * @param array $resource Mailjet Resource/Action pair
-     * @param array $args Request arguments
-     * @return Response
-     */
-    public function get($resource, array $args = [], array $options = [])
-    {
-        if (!empty($options)) {
-            $this->setOptions($options, $resource);
-        }
-        $result = $this->call2('GET', $resource[0], $resource[1], $args);
-        if (!empty($this->changed)) {
-            $this->setSettings();
-        }
-        return $result;
-    }
-
-    /**
-     * Trigger a POST request
-     * @param array $resource Mailjet Resource/Action pair
-     * @param array $args Request arguments
-     * @return Response
-     */
-    public function put($resource, array $args = [], array $options = [])
-    {
-        if (!empty($options)) {
-            $this->setOptions($options, $resource);
-        }
-        $result = $this->call2('PUT', $resource[0], $resource[1], $args);
-        if (!empty($this->changed)) {
-            $this->setSettings();
-        }
-        return $result;
-    }
-
-    /**
-     * Trigger a GET request
-     * @param array $resource Mailjet Resource/Action pair
-     * @param array $args Request arguments
-     * @return Response
-     */
-    public function delete($resource, array $args = [], array $options = [])
-    {
-        if (!empty($options)) {
-            $this->setOptions($options, $resource);
-        }
-        $result = $this->call2('DELETE', $resource[0], $resource[1], $args);
-        if (!empty($this->changed)) {
-            $this->setSettings();
-        }
-        return $result;
-    }
-
-    /**
-     * Build the final call url without query strings
-     * @param string $resource Mailjet resource
-     * @param string $action Mailjet resource action
-     * @param string $id mailjet resource id
-     * @param string $actionid mailjet resource actionid
-     * @return string final call url
-     */
-    private function buildURL($resource, $action, $id, $actionid)
-    {
-        $path = 'REST';
-        if (in_array($resource, $this->smsResources)) {
-            $path = '';
-        } elseif (in_array($action, $this->dataAction)) {
-            $path = 'DATA';
-        }
-
-        $arrayFilter = [$path, $resource, $id, $action, $actionid];
-        return $this->getApiUrl() . join('/', array_filter($arrayFilter));
-    }
-
-    /**
-     * Sets if we need to use https or http protocol while using API Url
-     * @param bool $bIsSecured True use https / false use http
-     * @return bool true if we set value false otherwise
-     */
-    public function setSecureProtocol($bIsSecured)
-    {
-        if (is_bool($bIsSecured)) {
-            $this->secure = $bIsSecured;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    // TODO : make the next code more readable
-
-    /**
-     * Temporary set the variables generating the url
-     * @param array $options contain temporary modifications for the client
-     * @param array $resource may contain the version linked to the ressource
-     */
-    private function setOptions($options, $resource)
-    {
-        if (!empty($options['version']) && is_string($options['version'])) {
-            $this->version = $options['version'];
-        } elseif (!empty($resource[2])) {
-            $this->version = $resource[2];
-        }
-
-        if (!empty($options['url']) && is_string($options['url'])) {
-            $this->url = $options['url'];
-        }
-
-        if (isset($options['secured']) && is_bool($options['secured'])) {
-            $this->secure = $options['secured'];
-        }
-
-        if (isset($options['call']) && is_bool($options['call'])) {
-            $this->call = $options['call'];
-        }
-        $this->changed = true;
-    }
-
-    /**
-     * set back the variables generating the url
-     */
-    private function setSettings()
-    {
-        if (!empty($this->settings['url']) && is_string($this->settings['url'])) {
-            $this->url = $this->settings['url'];
-        }
-        if (!empty($this->settings['version']) && is_string($this->settings['version'])) {
-            $this->version = $this->settings['version'];
-        }
-        if (isset($this->settings['call']) && is_bool($this->settings['call'])) {
-            $this->call = $this->settings['call'];
-        }
-        if (isset($this->settings['secured']) && is_bool($this->settings['secured'])) {
-            $this->secure = $this->settings['secured'];
-        }
-        $this->changed = false;
-    }
-
-    /**
-     * Set a backup if the variables generating the url are change during a call.
-     */
-    private function initSettings($call, $settings = [])
-    {
-        if (!empty($settings['url']) && is_string($settings['url'])) {
-            $this->settings['url'] = $settings['url'];
-        } else {
-            $this->settings['url'] = $this->url;
-        }
-
-        if (!empty($settings['version']) && is_string($settings['version'])) {
-            $this->settings['version'] = $settings['version'];
-        } else {
-            $this->settings['version'] = $this->version;
-        }
-
-        $settings['call'] = $call;
-        if (isset($settings['call']) && is_bool($settings['call'])) {
-            $this->settings['call'] = $settings['call'];
-        } else {
-            $this->settings['call'] = $this->call;
-        }
-
-        if (isset($settings['secured']) && is_bool($settings['secured'])) {
-            $this->settings['secured'] = $settings['secured'];
-        } else {
-            $this->settings['secured'] = $this->secure;
-        }
-
-        $this->changed = false;
     }
 }
