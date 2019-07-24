@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mailjet;
 
-class ApiKey
+final class ApiKey
 {
     public static function isValid(string $apiKey): bool
     {

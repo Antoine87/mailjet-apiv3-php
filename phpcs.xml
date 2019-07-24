@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="Coding standard">
-    <description>Mailjet coding standard</description>
+    <description>Coding standard</description>
 
     <file>src</file>
 
