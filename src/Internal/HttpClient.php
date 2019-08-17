@@ -12,6 +12,8 @@ use Symfony\Component\HttpClient\HttpClient as SymfonyHttpClient;
 final class HttpClient
 {
     private static $instance;
+
+    /** @var SymfonyHttpClient */
     private $client;
 
     public function request(string $method, string $url, string $jsonPayload)
@@ -28,6 +30,11 @@ final class HttpClient
         string $password,
         string $jsonPayload
     ) {
+        dump($this->client->request($method, $url, [
+            'auth_basic' => [$username, $password],
+            'body' => $jsonPayload
+        ]));
+
         return $this->client->request($method, $url, [
             'auth_basic' => [$username, $password],
             'body' => $jsonPayload
@@ -49,7 +56,8 @@ final class HttpClient
             'headers' => [
                 'User-Agent' => 'Mailjet PHP public api client',
                 'Content-Type' => 'application/json'
-            ]
+            ],
+            'timeout' => 120
         ]);
     }
 }

@@ -10,11 +10,10 @@ class Email implements ResourceObjectInterface
 {
     /** @var string */
     private $address;
-
     /** @var string */
     private $name;
 
-    public static function address(string $address)
+    public static function address(string $address): self
     {
         $email = new static;
         $email->address = $address;
@@ -40,5 +39,9 @@ class Email implements ResourceObjectInterface
         }
 
         return $array;
+    }
+
+    private function __construct()
+    {
     }
 }

@@ -14,6 +14,14 @@ class SendV31 implements EndpointInterface
     /** @var Object\Message[] */
     private $messages;
 
+    public static function messages(array $messages): self
+    {
+        $send = new static();
+        $send->messages = $messages;
+
+        return $send;
+    }
+
     public static function method(): string
     {
         return 'POST';
@@ -22,14 +30,6 @@ class SendV31 implements EndpointInterface
     public static function path(): string
     {
         return 'v3.1/send';
-    }
-
-    public static function messages(array $messages): self
-    {
-        $send = new static();
-        $send->messages = $messages;
-
-        return $send;
     }
 
     public function payload(): array
